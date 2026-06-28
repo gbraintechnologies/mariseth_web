@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
-import { useFarmerRegistrationRequests } from "@/apis/farmerRequestApi";
+import { type FarmerRegistrationRequestFilters, useFarmerRegistrationRequests } from "@/apis/farmerRequestApi";
 import CustomTable, { IPagination } from "@/components/CustomTable";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -15,15 +15,35 @@ import ApproveFarmerRequestModal from "./ApproveFarmerRequestModal";
 import FarmerRegistrationRequestSearch from "./FarmerRegistrationRequestSearch";
 import RejectFarmerRequestModal from "./RejectFarmerRequestModal";
 
+const FILTER_STORAGE_KEY = "farmer-registration-request-filters";
+const defaultFilters = {
+  page: 1,
+  page_size: PAGE_SIZE,
+  status: "pending",
+};
+
+function getInitialFilters(): FarmerRegistrationRequestFilters {
+  if (typeof window === "undefined") {
+    return defaultFilters;
+  }
+
+  try {
+    const storedFilters = window.sessionStorage.getItem(FILTER_STORAGE_KEY);
+    return storedFilters ? { ...defaultFilters, ...JSON.parse(storedFilters) } : defaultFilters;
+  } catch {
+    return defaultFilters;
+  }
+}
+
 export default function FarmerRegistrationRequests() {
-  const [filters, setFilters] = useState({
-    page: 1,
-    page_size: PAGE_SIZE,
-    status: "pending",
-  });
+  const [filters, setFilters] = useState<FarmerRegistrationRequestFilters>(getInitialFilters);
   const [selected, setSelected] = useState<any>({});
   const [approveModal, setApproveModal] = useState(false);
   const [rejectModal, setRejectModal] = useState(false);
+
+  useEffect(() => {
+    window.sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
+  }, [filters]);
 
   const { data, isLoading, refetch } = useFarmerRegistrationRequests({
     queryParams: filters,

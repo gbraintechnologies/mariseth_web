@@ -16,6 +16,9 @@ export default function FarmerRegistrationRequestDetails({ id }: { id: number })
   });
   const request = data as any;
   const status = request?.status || "pending";
+  const reviewedBy = request?.reviewed_by
+    ? `${request.reviewed_by?.first_name || ""} ${request.reviewed_by?.last_name || ""}`.trim() || request.reviewed_by?.email
+    : "N/A";
   const genderMap = {
     m: "Male",
     f: "Female",
@@ -99,6 +102,10 @@ export default function FarmerRegistrationRequestDetails({ id }: { id: number })
           </div>
           <div>
             <TextLabel title="Reviewed At" subTitle={request?.reviewed_at ? formatDateReadable(request.reviewed_at) : "N/A"} variant="primary" />
+            <hr className="mt-2" />
+          </div>
+          <div>
+            <TextLabel title="Reviewed By" subTitle={reviewedBy} variant="primary" />
             <hr className="mt-2" />
           </div>
           {request?.comments && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
@@ -31,14 +32,27 @@ const REQUEST_STATUS_OPTIONS = [
 
 export default function FarmerRegistrationRequestSearch({
   setFilters,
+  filters,
   isLoading,
 }: TSearchProps) {
   const form = useForm<z.infer<typeof requestSearchSchema>>({
     resolver: zodResolver(requestSearchSchema),
     defaultValues: {
-      status: "pending",
+      query: filters?.query || "",
+      region: filters?.region || "",
+      district: filters?.district || "",
+      status: filters?.status || "pending",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      query: filters?.query || "",
+      region: filters?.region || "",
+      district: filters?.district || "",
+      status: filters?.status || "pending",
+    });
+  }, [filters, form]);
 
   const { data: _regionsData } = useRegionsList({});
   const _regions = _regionsData as any;

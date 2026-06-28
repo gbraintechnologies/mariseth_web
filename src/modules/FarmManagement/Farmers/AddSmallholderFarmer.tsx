@@ -34,17 +34,23 @@ import { toast } from "sonner";
 import { cleanJsonData, getErrorMap, stringToBool } from "@/lib/helpers";
 import useGetRegionDistricts, { useAllFarmers, useAllFarms } from "../utils/hooks";
 import { Region } from "@/apis/adminApiSchemas";
-import { areasOfNeed } from "../utils/constants";
+import { areasOfNeed, ID_TYPE_OPTIONS } from "../utils/constants";
 import { formatPhoneNumberWithOutPlus, formatPhoneNumberWithPlus } from "@/modules/UserManagement/utils/helpers";
 
 const getValueId = (value: any) => value?.id ?? value ?? "";
 const getStringValue = (value: any) => value === undefined || value === null ? "" : String(value);
 const getCountryValue = (value: any) => value?.name ?? value?.label ?? value ?? "";
+const idTypeMap = {
+    ghana_card: "Ghana Card",
+    passport: "Passport ID",
+} as Record<string, string>;
+const getIdTypeValue = (value: any) => idTypeMap[String(value)] || getStringValue(value);
 const getSmallholderFarmerDefaultValues = (defaultData: any) => ({
     ...defaultData,
     phone_number: formatPhoneNumberWithPlus(defaultData?.phone_number),
     email: defaultData?.email || "",
     other_names: defaultData?.other_names || "",
+    id_type: getIdTypeValue(defaultData?.id_type),
     farm: getStringValue(getValueId(defaultData?.farm)),
     region: getStringValue(getValueId(defaultData?.region)),
     district: getStringValue(getValueId(defaultData?.district)),
@@ -204,7 +210,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                             className="flex flex-row w-full gap-x-6"
                                             required
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                         {GENDER_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -242,7 +248,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 <FormLabel>Select ID Type</FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 
                                 >
                                 <FormControl>
@@ -251,8 +257,9 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                     </SelectTrigger> 
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="ghana_card">Ghana Card</SelectItem>
-                                    <SelectItem value="passport">Passport</SelectItem>
+                                    {ID_TYPE_OPTIONS.map((item) => (
+                                        <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    ))}
                                 </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -340,7 +347,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 <FormLabel>Region {isLoadingRegions && <Loader className="animate-spin"/>}<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -368,7 +375,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 <FormLabel>District<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -395,7 +402,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 <FormLabel>Country<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 required
                                 >
                                 <FormControl>
@@ -421,7 +428,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 <FormLabel>Select Farm {isLoadingFarms && <Loader className="animate-spin"/>}</FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -449,7 +456,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                 </FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 required
                                 >
                                 <FormControl>
@@ -480,7 +487,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                                         className="flex flex-row w-full gap-x-6"
                                         required
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         {YES_NO_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -513,7 +520,7 @@ export default function AddSmallholderFarmer({isEdit, defaultData={}, farmerRegR
                             <FormLabel>Areas of Needed Assistance</FormLabel>
                             <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                             >
                             <FormControl>
                                 <SelectTrigger className="w-full">

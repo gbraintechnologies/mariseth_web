@@ -82,6 +82,15 @@ export const yesOrNoTypes = [
     "no",
 ]
 
+export const ID_TYPE_OPTIONS = [
+  "Ghana Card",
+  "NHIS",
+  "Driver's License",
+  "Voter's Card",
+  "Passport ID",
+  "No ID",
+]
+
 export const seasonStatus = [
   {label: "In Season", value: "in"},
   {label: "Out Season", value: "out"}

@@ -34,12 +34,17 @@ import { toast } from "sonner";
 import {  cleanJsonData, getErrorMap, stringToBool } from "@/lib/helpers";
 import { Region } from "@/apis/adminApiSchemas";
 import useGetRegionDistricts, { useAllFarms } from "../utils/hooks";
-import { areasOfNeed } from "../utils/constants";
+import { areasOfNeed, ID_TYPE_OPTIONS } from "../utils/constants";
 import { formatPhoneNumberWithOutPlus, formatPhoneNumberWithPlus } from "@/modules/UserManagement/utils/helpers";
 
 const getValueId = (value: any) => value?.id ?? value ?? "";
 const getStringValue = (value: any) => value === undefined || value === null ? "" : String(value);
 const getCountryValue = (value: any) => value?.name ?? value?.label ?? value ?? "";
+const idTypeMap = {
+    ghana_card: "Ghana Card",
+    passport: "Passport ID",
+} as Record<string, string>;
+const getIdTypeValue = (value: any) => idTypeMap[String(value)] || getStringValue(value);
 const getLeadFarmerDefaultValues = (defaultData: any) => ({
     ...defaultData,
     phone_number: formatPhoneNumberWithPlus(defaultData?.phone_number),
@@ -53,6 +58,7 @@ const getLeadFarmerDefaultValues = (defaultData: any) => ({
 
     farming_type: getStringValue(defaultData?.leadership_experience?.farming_type),
     is_mentoring_other_farmers: getStringValue(defaultData?.leadership_experience?.is_mentoring_other_farmers),
+    id_type: getIdTypeValue(defaultData?.id_type),
     number_of_farmers_mentoring: defaultData?.leadership_experience?.number_of_farmers_mentoring || "",
     has_farming_membership: getStringValue(defaultData?.leadership_experience?.has_farming_membership),
     farm_association: defaultData?.leadership_experience?.farm_association || "",
@@ -217,7 +223,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                             className="flex flex-row w-full gap-x-6"
                                             required
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                         {GENDER_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -255,7 +261,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>Select ID Type<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 required
                                 >
                                 <FormControl>
@@ -264,8 +270,9 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                     </SelectTrigger> 
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="ghana_card">Ghana Card</SelectItem>
-                                    <SelectItem value="passport">Passport</SelectItem>
+                                    {ID_TYPE_OPTIONS.map((item) => (
+                                        <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    ))}
                                 </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -358,7 +365,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>Region {isLoadingRegions && <Loader className="animate-spin"/>}<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -386,7 +393,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>District<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -413,7 +420,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>Country<div className='text-red-500'>*</div></FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 required
                                 >
                                 <FormControl>
@@ -439,7 +446,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>Select Farm {isLoadingFarms && <Loader className="animate-spin"/>}</FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -467,7 +474,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                 <FormLabel>Farming Type</FormLabel>
                                 <Select
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                value={field.value}
                                 >
                                 <FormControl>
                                     <SelectTrigger className="w-full">
@@ -497,7 +504,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                         className="flex flex-row w-full gap-x-6"
                                         required
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         {YES_NO_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -533,7 +540,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                         className="flex flex-row w-full gap-x-6"
                                         required
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         {YES_NO_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -569,7 +576,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                         className="flex flex-row w-full gap-x-6"
                                         required
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         {YES_NO_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -607,7 +614,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                                         className="flex flex-row w-full gap-x-6"
                                         required
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         {YES_NO_OPTIONS.map((item, idx) =>(
                                             <div key={idx} className="flex items-center space-x-2">
@@ -640,7 +647,7 @@ export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestI
                             <FormLabel>Areas of Needed Assistance</FormLabel>
                             <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                             >
                             <FormControl>
                                 <SelectTrigger className="w-full">

@@ -42,11 +42,17 @@ export default function ApproveFarmerRequestModal({
             onValueChange={(value) => setFarmerType(value as "lead" | "smallholder")}
             className="grid grid-cols-1 gap-3"
           >
-            <div className="flex items-center space-x-2 rounded-md border p-3">
+            <div
+              className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer"
+              onClick={() => setFarmerType("lead")}
+            >
               <RadioGroupItem value="lead" id="lead-farmer" />
               <Label htmlFor="lead-farmer">Lead Farmer</Label>
             </div>
-            <div className="flex items-center space-x-2 rounded-md border p-3">
+            <div
+              className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer"
+              onClick={() => setFarmerType("smallholder")}
+            >
               <RadioGroupItem value="smallholder" id="smallholder-farmer" />
               <Label htmlFor="smallholder-farmer">Smallholder Farmer</Label>
             </div>

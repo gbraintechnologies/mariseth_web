@@ -1,13 +1,15 @@
 import PageTitle from "@/components/layouts/PageTitle";
-import AddSmallholderFarmer from "@/modules/FarmManagement/Farmers/AddSmallholderFarmer";
+import AddSmallholderFarmerPageContent from "@/modules/FarmManagement/Farmers/AddSmallholderFarmerPageContent";
 
-export default function Page(){
+export default async function Page({searchParams}: {searchParams: Promise<{farmer_reg_request?: string}>}){
+    const params = await searchParams;
+    const farmerRegRequest = params?.farmer_reg_request;
+    const farmerRegRequestId = farmerRegRequest ? Number(farmerRegRequest) : undefined;
+
     return(
         <div>
             <PageTitle title="Add Smallholder Farmer" />
-            <div className="bg-[#fff] rounded-lg h-full">
-                <AddSmallholderFarmer />
-            </div>
+            <AddSmallholderFarmerPageContent farmerRegRequestId={farmerRegRequestId}/>
         </div>
     )
 }

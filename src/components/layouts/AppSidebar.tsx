@@ -180,7 +180,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         slug: "approvals",
         icon: BadgeCheck,
-        hasAccess: (approve_inflow_order || approve_inflow_delivery_inspection || approve_deny_credit || list_outflow_approvals),
+        hasAccess: (approve_inflow_order || approve_inflow_delivery_inspection || approve_deny_credit || list_outflow_approvals || list_farmers),
         items: [
           {
             title: "Inbound",
@@ -205,6 +205,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: routeTo.creditWarehouseApprovals,
             slug: "approvals",
             hasAccess: list_credit_fulfill,
+          },
+          {
+            title: "Farmer Registration Requests",
+            url: routeTo.farmerRegistrationRequests,
+            slug: "approvals",
+            hasAccess: list_farmers,
           },
         ],
       },

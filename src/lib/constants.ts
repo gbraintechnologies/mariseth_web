@@ -44,6 +44,8 @@ export const routeTo = {
     creditRequestApprovals: "/app/approvals/credit-request",
     viewCreditRequestApprovals: "/app/approvals/credit-management/view-request",
     creditWarehouseApprovals: "/app/approvals/warehouse-credit",
+    farmerRegistrationRequests: "/app/approvals/farmer-registration-requests",
+    viewFarmerRegistrationRequest: "/app/approvals/farmer-registration-requests",
 
     employeeManagement: "/app/employee-management",
     employeeProfiles: "/app/employee-management/profiles",

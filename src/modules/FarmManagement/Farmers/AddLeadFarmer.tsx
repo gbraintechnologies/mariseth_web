@@ -19,6 +19,7 @@ import {
     SelectValue,
   } from '@/components/ui/select';
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -36,35 +37,44 @@ import useGetRegionDistricts, { useAllFarms } from "../utils/hooks";
 import { areasOfNeed } from "../utils/constants";
 import { formatPhoneNumberWithOutPlus, formatPhoneNumberWithPlus } from "@/modules/UserManagement/utils/helpers";
 
+const getValueId = (value: any) => value?.id ?? value ?? "";
+const getStringValue = (value: any) => value === undefined || value === null ? "" : String(value);
+const getCountryValue = (value: any) => value?.name ?? value?.label ?? value ?? "";
+const getLeadFarmerDefaultValues = (defaultData: any) => ({
+    ...defaultData,
+    phone_number: formatPhoneNumberWithPlus(defaultData?.phone_number),
+    email: defaultData?.email || "",
+    other_names: defaultData?.other_names || "",
 
-export default function AddLeadFarmer({isEdit, defaultData={}}:{isEdit?: boolean; defaultData?: any}) {
+    farm: getStringValue(getValueId(defaultData?.farm)),
+    region: getStringValue(getValueId(defaultData?.region)),
+    district: getStringValue(getValueId(defaultData?.district)),
+    country: getStringValue(getCountryValue(defaultData?.country)),
+
+    farming_type: getStringValue(defaultData?.leadership_experience?.farming_type),
+    is_mentoring_other_farmers: getStringValue(defaultData?.leadership_experience?.is_mentoring_other_farmers),
+    number_of_farmers_mentoring: defaultData?.leadership_experience?.number_of_farmers_mentoring || "",
+    has_farming_membership: getStringValue(defaultData?.leadership_experience?.has_farming_membership),
+    farm_association: defaultData?.leadership_experience?.farm_association || "",
+    has_received_farming_leadership_training: getStringValue(defaultData?.leadership_experience?.has_received_farming_leadership_training ?? defaultData?.leadership_experience?.received_farming_leadership_training),
+    farming_leadership_training: defaultData?.leadership_experience?.farming_leadership_training || defaultData?.leadership_experience?.specify_farming_leadership_training || "",
+
+    has_received_support: getStringValue(defaultData?.support_assistance?.has_received_support ?? defaultData?.support_assistance?.received_support),
+    support_received: defaultData?.support_assistance?.support_received || defaultData?.support_assistance?.specify_support_received || "",
+    areas_of_needed_assistance: defaultData?.support_assistance?.areas_of_needed_assistance || ""
+});
+
+export default function AddLeadFarmer({isEdit, defaultData={}, farmerRegRequestId}:{isEdit?: boolean; defaultData?: any; farmerRegRequestId?: number}) {
 
     const router = useRouter()
     const form = useForm<z.infer<typeof leadFarmerSchema>>({
         resolver: zodResolver(leadFarmerSchema),
-        defaultValues: {
-            ...defaultData,
-            phone_number: formatPhoneNumberWithPlus(defaultData?.phone_number),
-            email: defaultData?.email || "",
-            other_names: defaultData?.other_names || "",
-
-            farm: String(defaultData?.farm?.id),
-            region: String(defaultData?.region?.id),
-            district: String(defaultData?.district?.id),
-
-            farming_type: String(defaultData?.leadership_experience?.farming_type),
-            is_mentoring_other_farmers: String(defaultData?.leadership_experience?.is_mentoring_other_farmers),
-            number_of_farmers_mentoring: defaultData?.leadership_experience?.number_of_farmers_mentoring,
-            has_farming_membership: String(defaultData?.leadership_experience?.has_farming_membership),
-            farm_association: defaultData?.leadership_experience?.farm_association,
-            has_received_farming_leadership_training: String(defaultData?.leadership_experience?.received_farming_leadership_training),
-            farming_leadership_training: defaultData?.leadership_experience?.specify_farming_leadership_training,
-
-            has_received_support: String(defaultData?.support_assistance?.received_support),
-            support_received: defaultData?.support_assistance?.specify_support_received,
-            areas_of_needed_assistance: defaultData?.support_assistance?.areas_of_needed_assistance
-        }
+        defaultValues: getLeadFarmerDefaultValues(defaultData)
     });
+
+    useEffect(() => {
+        form.reset(getLeadFarmerDefaultValues(defaultData));
+    }, [defaultData, form]);
 
     const {data:_regionsData, isLoading: isLoadingRegions} = useRegionsList({})
     const _regions = _regionsData as any
@@ -124,7 +134,8 @@ export default function AddLeadFarmer({isEdit, defaultData={}}:{isEdit?: boolean
                 has_received_support: stringToBool(values?.has_received_support),
                 support_received: values?.support_received,
                 areas_of_needed_assistance: values?.areas_of_needed_assistance
-            }
+            },
+            farmer_reg_request: farmerRegRequestId
         }) 
         if(isEdit){
             updateMutate({
